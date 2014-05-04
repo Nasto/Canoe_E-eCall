@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Info Desktop Setup">
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl15" Children="Controls" ControlName="Static Text 3">
+      <Property Name="Name">StaticTextControl15</Property>
+      <Property Name="Size">1, 193</Property>
+      <Property Name="Location">767, 7</Property>
+      <Property Name="BackColor">221, 221, 221</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">
+      </Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl9" Children="Controls" ControlName="Static Text 3">
+      <Property Name="Name">StaticTextControl9</Property>
+      <Property Name="Size">1, 193</Property>
+      <Property Name="Location">390, 7</Property>
+      <Property Name="BackColor">221, 221, 221</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">
+      </Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl8" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl8</Property>
+      <Property Name="Size">250, 13</Property>
+      <Property Name="Location">57, 172</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">ASN.1 description of Vector Simple SPaT message:</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PanelHelpControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PanelHelpControl2" Children="Controls" ControlName="File Button">
+      <Property Name="Name">PanelHelpControl2</Property>
+      <Property Name="Size">23, 23</Property>
+      <Property Name="Location">282, 97</Property>
+      <Property Name="Image">iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIASURBVDhPpZHPS9NhHMf9F0JFqGhumc7Jcm7aJtihDgVRoJSJYWlFCAkSKCLUwS5eCkdBQREFuimBEEWXzh4iKbOy0sr80ebm9v0xNsZgY3v3fh4yNngu0eF1eOD9i89TBuC/KHns29Xht5SfhqW8E9WVXbBWdcO6uwe2vb3Yb7mEGtuVvmK9oOQhzIVCQZLJZJBOp2GaJmZnX+FATT9q666izjHoKvaUBFRXnEUul4OmaYiTGNmO6wgGX6DWPoB8Pg974xAcnpG/ISUB1qpzyGaziMWFUUOU5khMkwF25zXUNw3D0TyKBt8NyhUBtj0X5Gxh9txfloS2dczNzSMQeIap4HNMzbyE8/BNyhUB4lCpVEq2hmM6zRo2yXrUwFpEx4+Ige9bBhqPjlOuCBCHSiaTCLN1Z0ExKzQvhw24jt+mXBEgDpVIJNiqy9afonVLl63C+IV8Dhlwn7xDuSJAHEoErNGsWrAUMvHxlwlP+z3KFQH17hEYhoFVNn4jK0Wtn8jipon3pKXzIeWKgAbvdfn/wqxasLBh4i051P2YckWAs21M/sBXti6xUcz9wMYF8u6PeZ54z09Srgg4eGQcq6GonCvMi0SYd4xv1k28Jr6+acoVAa5jt/xNJybgPnVXHqr5zAO0dD3i5Cfw9kzC1xtA68UZtF5+6lcG/Dso+w3bsfEOIVbuSQAAAABJRU5ErkJggg==</Property>
+      <Property Name="Filename">..\.\ASN1\CAM_and_DENM.asn1</Property>
+      <Property Name="ShowToolTip">True</Property>
+      <Property Name="TabIndex">39</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PanelHelpControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PanelHelpControl1" Children="Controls" ControlName="File Button">
+      <Property Name="Name">PanelHelpControl1</Property>
+      <Property Name="Size">23, 23</Property>
+      <Property Name="Location">306, 172</Property>
+      <Property Name="Image">iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIASURBVDhPpZHPS9NhHMf9F0JFqGhumc7Jcm7aJtihDgVRoJSJYWlFCAkSKCLUwS5eCkdBQREFuimBEEWXzh4iKbOy0sr80ebm9v0xNsZgY3v3fh4yNngu0eF1eOD9i89TBuC/KHns29Xht5SfhqW8E9WVXbBWdcO6uwe2vb3Yb7mEGtuVvmK9oOQhzIVCQZLJZJBOp2GaJmZnX+FATT9q666izjHoKvaUBFRXnEUul4OmaYiTGNmO6wgGX6DWPoB8Pg974xAcnpG/ISUB1qpzyGaziMWFUUOU5khMkwF25zXUNw3D0TyKBt8NyhUBtj0X5Gxh9txfloS2dczNzSMQeIap4HNMzbyE8/BNyhUB4lCpVEq2hmM6zRo2yXrUwFpEx4+Ige9bBhqPjlOuCBCHSiaTCLN1Z0ExKzQvhw24jt+mXBEgDpVIJNiqy9afonVLl63C+IV8Dhlwn7xDuSJAHEoErNGsWrAUMvHxlwlP+z3KFQH17hEYhoFVNn4jK0Wtn8jipon3pKXzIeWKgAbvdfn/wqxasLBh4i051P2YckWAs21M/sBXti6xUcz9wMYF8u6PeZ54z09Srgg4eGQcq6GonCvMi0SYd4xv1k28Jr6+acoVAa5jt/xNJybgPnVXHqr5zAO0dD3i5Cfw9kzC1xtA68UZtF5+6lcG/Dso+w3bsfEOIVbuSQAAAABJRU5ErkJggg==</Property>
+      <Property Name="Filename">.\..\ASN1\Vector_SPaT.asn1</Property>
+      <Property Name="ShowToolTip">True</Property>
+      <Property Name="TabIndex">19</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl6" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl6</Property>
+      <Property Name="Size">319, 52</Property>
+      <Property Name="Location">828, 148</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; Include Files:
+   - SimCar: Contains the behavior of the simulation of a car
+   - Basic functions: Contains general functionality to e.g. load GPS
+                               data of a GPS log file</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl11" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl11</Property>
+      <Property Name="Size">336, 78</Property>
+      <Property Name="Location">828, 69</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; Traffic Light node: Contains the simulation of the traffic light
+&gt; RWW node:          Contains the simulation of the roadworks warning
+&gt; Visualizer node:     Responsible for the visualization of events
+&gt; Vehicle nodes:       Contains the simulation of the cars. Sending of 
+                                 CAMs can be activated/deactivated by the 
+                                  keys '1' ... '7'</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl4" ControlName="Picture Box 4">
+      <Property Name="Name">PictureBoxControl4</Property>
+      <Property Name="Size">48, 45</Property>
+      <Property Name="Location">774, 5</Property>
+      <Property Name="ImageFile">Bitmap\MoreInfo.png</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl3" ControlName="Picture Box 3">
+      <Property Name="Name">PictureBoxControl3</Property>
+      <Property Name="Size">48, 45</Property>
+      <Property Name="Location">397, 5</Property>
+      <Property Name="ImageFile">Bitmap\Step.png</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl2" ControlName="Picture Box 2">
+      <Property Name="Name">PictureBoxControl2</Property>
+      <Property Name="Size">48, 45</Property>
+      <Property Name="Location">3, 5</Property>
+      <Property Name="ImageFile">Bitmap\Info.png</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl16" Children="Controls" ControlName="Static Text">
+      <Property Name="Name">StaticTextControl16</Property>
+      <Property Name="Size">326, 20</Property>
+      <Property Name="Location">828, 2</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+      <Property Name="Text">Tip</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl14" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl14</Property>
+      <Property Name="Size">314, 26</Property>
+      <Property Name="Location">451, 128</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; If the configuration is switched to real mode, it will communicate
+   over the configured WLAN adapter.
+</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl4" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl4</Property>
+      <Property Name="Size">314, 26</Property>
+      <Property Name="Location">451, 96</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; The example runs in simulation mode. The communication does
+    only affect the simulated nodes within CANoe.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl1" ControlName="Picture Box">
+      <Property Name="Name">PictureBoxControl1</Property>
+      <Property Name="Size">48, 45</Property>
+      <Property Name="Location">397, 96</Property>
+      <Property Name="ImageFile">Bitmap\Caution.png</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl13" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl13</Property>
+      <Property Name="Size">316, 33</Property>
+      <Property Name="Location">838, 39</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">The CAPL Browser opens. Use the handlers overview on the left side in the CAPL Browser to explore the CAPL program.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl12" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl12</Property>
+      <Property Name="Size">246, 13</Property>
+      <Property Name="Location">828, 23</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; Double click on a node in the Simulation Setup.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl10" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl10</Property>
+      <Property Name="Size">191, 13</Property>
+      <Property Name="Location">451, 28</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">&gt; Press the [Start] button in the toolbar.
+</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl7" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl7</Property>
+      <Property Name="Size">304, 43</Property>
+      <Property Name="Location">461, 47</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">When the measurement is started, CANoe switches to the desktop 'Map Window'. Use the context menu of the desktop tab to configure this behavior.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl5" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl5</Property>
+      <Property Name="Size">327, 110</Property>
+      <Property Name="Location">57, 56</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">In the simulation two ITS Roadside stations (traffic light, roadworks warning) and multiple ITS Vehicle stations (cars) are simulated. The cars drive on a  route and pass the traffic light. Each car sends every second a PER encoded CAM message:
+
+The payload of the RSU contains PER encoded information 
+about the system, e.g. the traffic light transmits the actual state 
+and the time, when to switch to next state. 
+
+ASN.1 description of Vector Simple SPaT message:</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text">
+      <Property Name="Name">StaticTextControl1</Property>
+      <Property Name="Size">323, 19</Property>
+      <Property Name="Location">451, 3</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+      <Property Name="Text">Usage of the desktop</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl3</Property>
+      <Property Name="Size">281, 26</Property>
+      <Property Name="Location">57, 28</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt</Property>
+      <Property Name="Text">This sample configuration demonstrates the simulation of a
+WLAN network with CANoe.</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=8.1.52.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text">
+      <Property Name="Name">StaticTextControl2</Property>
+      <Property Name="Size">327, 17</Property>
+      <Property Name="Location">57, 5</Property>
+      <Property Name="BackColor">Info</Property>
+      <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+      <Property Name="Text">Information</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">1175, 206</Property>
+    <Property Name="BackColor">Info</Property>
+  </Object>
+</Panel>

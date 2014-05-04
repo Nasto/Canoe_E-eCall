@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<asnv>
+
+  
+  <protocol name="SpatMessage">
+    <encoding entry-point="SpatMessage" method="per"/>
+    <lower-layer name="btp" value2="6002"/>
+    <source path="ASNV_Module_SpatMessage.xml"/>
+  </protocol>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <protocol name="CAM">
+    <encoding entry-point="CAM" method="per"/>
+    <lower-layer name="btp" value2="2001"/>
+    <source path="ASNV_Module_CAM.xml"/>
+  </protocol>
+
+  <protocol name="DENM">
+    <encoding entry-point="DENM" method="per"/>
+    <lower-layer name="btp" value2="2002"/>
+    <source path="ASNV_Module_DENM.xml"/>
+  </protocol>
+
+</asnv>

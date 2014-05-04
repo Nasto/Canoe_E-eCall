@@ -1,0 +1,17 @@
+CANoe.Car2x System Demo
+---------------------------------
+
+This configuration simulates multiple ITS vehicle stations (cars) and a ITS Roadside station (a traffic light). The behaviour of the nodes is implemented in the CAPL programms Traffic Light and SimCar1 - SimCar7.
+
+The 'Traffic Light' panel informs about the actual state of the traffic light, the Dashboard SimCar1 panel informs about information within the car and also about received information from the RSU.
+
+The Map window at the desktop "Map Window" displays the current position of each  station. The position is extracted by the Map Window from the latest message it has received from the station.
+
+********************************************************************
+A detailed description can be found in the online help (see example configurations
+in the table of contents).
+********************************************************************
+
+------------------------------------------------------------------------------------------------------
+Copyright (c) by Vector Informatik GmbH
+------------------------------------------------------------------------------------------------------
