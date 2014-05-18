@@ -865,9 +865,10 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   LONG rxLength;
   int  distToMyself;
   int  stationType;
+  
+  /* new */
   byte recECode[4];
 
-  /* new */
   //read the first 4 bytes
   C2xGetThisData(0, 4, recECode);
   
