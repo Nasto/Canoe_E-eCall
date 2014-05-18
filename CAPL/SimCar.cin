@@ -9,7 +9,9 @@ includes
 variables
 {
   // SimCar configuration
+  /* new */
   int gCarCrashed           = 0;
+  
   int gDriveCourseClockwise = 1;
   int gUseDisplay           = 1;   // this option can only be enabled for one CAPL programm to use the car panel
   int gkCommRange           = 100; // range in meter, in which messages are passed through to application
@@ -43,6 +45,8 @@ variables
   /********************************************/
   // facility variables
   int     gTimCAMCycleTime   = 1000;   // cycle time of CAM messages
+  /* new */
+  int     gAccidentTime      = 1000;  //
   BYTE    gHL_AccidentFlag   = 0;
 
   /*********************************************/
@@ -105,6 +109,29 @@ variables
   int       gRwwDisplayActive     = 0;
   int       gTlDisplayActive      = 0;
   int       gIsDENMAvailable      = 0;    // 0 = false, 1 = true
+  
+  
+  /* new */
+  struct AccidentData
+  {
+    //TODO: more infos?
+    int numPassengers;
+    int dmgClass;
+  };
+  
+  
+  struct EeCallBrdcData
+  {
+    BYTE ECode;
+    struct LongPositionVector pos;
+    struct AccidentData accInfo;
+  };
+  
+  struct EeCallBrdcData brdcast;
+  
+  long testPacket;
+  /* new end */
+  
 }
 
 on preStart
@@ -130,12 +157,36 @@ void Appl_Init ()
   // init the CAM packet
   //gSimCar_CAMPktHdl = API_InitCAMPacket();
   gSimCar_CAMPktHdl = C2xInitPacket("btp", "btpOverEH");
+    
   C2xInitProtocol(gSimCar_CAMPktHdl, "CAM");
     
   if (gSimCar_CAMPktHdl == 0)
   {
     write ("CAM packet cannot be initialized: stopping measurement");
     stop();
+  }
+  
+  /* new */
+  if(gCarCrashed == 1){
+    //struct WLANData testData;
+    
+    testPacket = C2xInitPacket(53, brdcast);
+    
+    SimCar_SetWLANData();
+    SetPacketData_WLAN(testPacket, gWlanData);
+    setPacketData_ETH(testPacket, gEthData);
+    
+    brdcast.ECode = 0x19;
+    brdcast.accInfo.numPassengers = 4;
+    
+    
+    // Complete and send packet
+    C2xCompletePacket( testPacket );
+    C2xOutputPacket( testPacket );
+
+    // release packet
+    C2xReleasePacket( testPacket );
+  /* new end */
   }
 }
 
@@ -150,7 +201,7 @@ on start
 //
 /********************************************************/
 void Appl_Start ()
-{
+{  
   // start cars later
   setTimer(tim_StartSimCar, 5);
 
@@ -198,9 +249,12 @@ void SimCar_Start ()
       gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
       gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
     }
+    
+  /* new */
   } else {
     gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
   }
+  /* new end */
 
   // start update position timer
   setTimer (tim_SimCar_UpdatePos, gSimCar_UpdPosTimer);

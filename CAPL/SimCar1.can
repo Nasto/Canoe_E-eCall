@@ -29,7 +29,10 @@ on start
 void StartSimCar_1 ()
 {
   // configure sim car
+  
+  /* new */
   gCarCrashed           = 1;
+  
   gSpeed                = 0;
   gSimCar_ActSpeed      = 0;
   gDriveCourseClockwise = 1;

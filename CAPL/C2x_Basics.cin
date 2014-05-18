@@ -12,8 +12,6 @@ variables
   float gHeading     = 100;
   WORD  gAltitude    = 100;
   char  gcTimeStamp[7];
-
-  //TODO: a struct to send via C2XInitPackage
   
   struct WLANData
   {
