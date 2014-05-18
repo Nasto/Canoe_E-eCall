@@ -11,6 +11,7 @@ variables
   // SimCar configuration
   /* new */
   int gCarCrashed           = 0;
+  byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
   
   int gDriveCourseClockwise = 1;
   int gUseDisplay           = 1;   // this option can only be enabled for one CAPL programm to use the car panel
@@ -864,6 +865,23 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   LONG rxLength;
   int  distToMyself;
   int  stationType;
+  byte recECode[4];
+
+  /* new */
+  //read the first 4 bytes
+  C2xGetThisData(0, 4, recECode);
+  
+  //check if these 4 bytes are the EeCall-Code
+  if(recECode[0] == gEeCallCode[0] && 
+    recECode[1] == gEeCallCode[1] && 
+    recECode[2] == gEeCallCode[2] && 
+    recECode[3] == gEeCallCode[3])
+  {
+    //EeCall-Action!
+    write("BAM!!");
+  }
+  /* new end */
+  
 
   // if it is a received message
   if (dir == RX)
