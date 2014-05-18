@@ -122,8 +122,10 @@ variables
   
   struct EeCallBrdcData
   {
-    BYTE ECode;
-    struct LongPositionVector pos;
+    BYTE ECode[4];
+    DWORD  timeStamp;
+    float  latitude;
+    float  longitude;
     struct AccidentData accInfo;
   };
   
@@ -170,14 +172,16 @@ void Appl_Init ()
   if(gCarCrashed == 1){
     //struct WLANData testData;
     
-    testPacket = C2xInitPacket(53, brdcast);
     
-    SimCar_SetWLANData();
-    SetPacketData_WLAN(testPacket, gWlanData);
-    setPacketData_ETH(testPacket, gEthData);
-    
-    brdcast.ECode = 0x19;
+    brdcast.ECode[0] = 0xf8;
+    brdcast.ECode[1] = 0xfa;
+    brdcast.ECode[2] = 0xfc;
+    brdcast.ECode[3] = 0x19;
+    brdcast.longitude = 1.337;
+    brdcast.latitude = 4.2;
     brdcast.accInfo.numPassengers = 4;
+    
+    testPacket = C2xInitPacket(32, brdcast);
     
     
     // Complete and send packet
