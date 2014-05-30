@@ -11,6 +11,7 @@ variables
   // SimCar configuration
   /* new */
   int gCarCrashed           = 0;
+  int answerSent            = 0;
   byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
   
   int gDriveCourseClockwise = 1;
@@ -123,7 +124,7 @@ variables
   
   struct EeCallBrdcData
   {
-    BYTE ECode[4];
+    BYTE ECode[34];
     DWORD  timeStamp;
     float  latitude;
     float  longitude;
@@ -133,9 +134,16 @@ variables
   struct EeCallBrdcData brdcast;
   
   long testPacket;
+  
+  struct AccidentAnswerData
+  {
+    BYTE ACode [34];
+  };
+  
   /* new end */
   
 }
+
 
 on preStart
 {
@@ -174,15 +182,16 @@ void Appl_Init ()
     //struct WLANData testData;
     
     
-    brdcast.ECode[0] = 0xf8;
-    brdcast.ECode[1] = 0xfa;
-    brdcast.ECode[2] = 0xfc;
-    brdcast.ECode[3] = 0x19;
+    brdcast.ECode[30] = 0xf8;
+    brdcast.ECode[31] = 0xfa;
+    brdcast.ECode[32] = 0xfc;
+    brdcast.ECode[33] = 0x19;
+    //brdcast.ECode[33] = 0xff;
     brdcast.longitude = 1.337;
     brdcast.latitude = 4.2;
     brdcast.accInfo.numPassengers = 4;
     
-    testPacket = C2xInitPacket(32, brdcast);
+    testPacket = C2xInitPacket(34, brdcast);
     
     
     // Complete and send packet
@@ -873,15 +882,27 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   C2xGetThisData(0, 4, recECode);
   
   //check if these 4 bytes are the EeCall-Code
-  if(recECode[0] == gEeCallCode[0] && 
+  if(answerSent==0&&
+    gCarCrashed == 0&&
+    recECode[0] == gEeCallCode[0] && 
     recECode[1] == gEeCallCode[1] && 
     recECode[2] == gEeCallCode[2] && 
     recECode[3] == gEeCallCode[3])
   {
     //EeCall-Action!
+    Rx_HandleECall(recECode);
     write("BAM!!");
+      write("0: %i %i", recECode[0], gEeCallCode[0]);
+  write("1: %i %i", recECode[1], gEeCallCode[1]);
+  write("2: %i %i", recECode[2], gEeCallCode[2]);
+  write("3: %i %i", recECode[3], gEeCallCode[3]);
+    answerSent=1;
   }
   /* new end */
+  if(gCarCrashed == 1)write("ficken");
+  if(gkCarId == 2)write("ich bin die 2");
+     
+  
   
 
   // if it is a received message
@@ -1219,6 +1240,14 @@ void Rx_HandleITSStation(long packet, int dist)
   // insert car data in 
   CarDataListInsertItem(actCarData);
 }
+/*new*/
+RX_HandleECall(byte recECall[])
+{
+  //hier findet die Berechnung statt!
+}
+
+/*end new*/
+
 
 /****************************************************/
 //
