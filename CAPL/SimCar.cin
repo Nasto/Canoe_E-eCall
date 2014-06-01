@@ -13,6 +13,9 @@ variables
   int gCarCrashed           = 0;
   int answerSent            = 0;
   byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
+  byte gEcAnswCode[4]       = {0xfa, 0xcc, 0xde, 0x42};
+  byte gEcSelectCode[4]     = {0xf0, 0xf0, 0xf0, 0xf0};
+  /* end new */
   
   int gDriveCourseClockwise = 1;
   int gUseDisplay           = 1;   // this option can only be enabled for one CAPL programm to use the car panel
@@ -116,15 +119,15 @@ variables
   /* new */
   struct AccidentData
   {
-    //TODO: more infos?
     int numPassengers;
     int dmgClass;
   };
   
-  
   struct EeCallBrdcData
   {
-    BYTE ECode[34];
+    //TODO: smart things!
+    BYTE eCode[48];
+    int crashCarID;
     DWORD  timeStamp;
     float  latitude;
     float  longitude;
@@ -132,14 +135,32 @@ variables
   };
   
   struct EeCallBrdcData brdcast;
+  long EcBrdcPacket;
   
-  long testPacket;
   
-  struct AccidentAnswerData
+  struct EeCallAnswerData
   {
-    BYTE ACode [34];
+    BYTE aCode[48];
+    int helpCarID;
+    int eCQI;      //EeCallQualityIndex
   };
   
+  struct EeCallAnswerData eCAnswer;
+  long eCAnswPacket;
+
+  
+  struct EeCallSelectData
+  {
+    BYTE sCode[48];
+    int selectedCarID;
+  };
+  
+  struct EeCallSelectData eCSelect;
+  long eCSelectPacket;
+
+      int index;
+  
+  int selectSent;
   /* new end */
   
 }
@@ -182,24 +203,26 @@ void Appl_Init ()
     //struct WLANData testData;
     
     
-    brdcast.ECode[30] = 0xf8;
-    brdcast.ECode[31] = 0xfa;
-    brdcast.ECode[32] = 0xfc;
-    brdcast.ECode[33] = 0x19;
+    brdcast.ECode[44] = 0xf8;
+    brdcast.ECode[45] = 0xfa;
+    brdcast.ECode[46] = 0xfc;
+    brdcast.ECode[47] = 0x19;
     //brdcast.ECode[33] = 0xff;
-    brdcast.longitude = 1.337;
-    brdcast.latitude = 4.2;
+    brdcast.crashCarID = gkCarId;
+    brdcast.longitude = 13.37;
+    brdcast.latitude = 0.0;
+    brdcast.accInfo.dmgClass = 2;
     brdcast.accInfo.numPassengers = 4;
     
-    testPacket = C2xInitPacket(34, brdcast);
+    EcBrdcPacket = C2xInitPacket(76, brdcast);
     
     
     // Complete and send packet
-    C2xCompletePacket( testPacket );
-    C2xOutputPacket( testPacket );
+    C2xCompletePacket( EcBrdcPacket );
+    C2xOutputPacket( EcBrdcPacket );
 
     // release packet
-    C2xReleasePacket( testPacket );
+    C2xReleasePacket( EcBrdcPacket );
   /* new end */
   }
 }
@@ -371,7 +394,9 @@ void SimCar_Move()
       gSimCar_ActPosLat   = gLatitude;
       gSimCar_ActPosLong  = gLongitude;
       gSimCar_ActHeading  = gHeading;
+      /* new */
       gSimCar_ActSpeed    = (gCarCrashed==1 ? 0 : gSpeed);
+      /* end new */
       gSimCar_ActAltitude = gAltitude;
     }
   }
@@ -882,8 +907,8 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   C2xGetThisData(0, 4, recECode);
   
   //check if these 4 bytes are the EeCall-Code
-  if(answerSent==0&&
-    gCarCrashed == 0&&
+  if(answerSent == 0 &&
+    gCarCrashed == 0 &&
     recECode[0] == gEeCallCode[0] && 
     recECode[1] == gEeCallCode[1] && 
     recECode[2] == gEeCallCode[2] && 
@@ -891,16 +916,48 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   {
     //EeCall-Action!
     Rx_HandleECall(recECode);
-    write("BAM!!");
-      write("0: %i %i", recECode[0], gEeCallCode[0]);
-  write("1: %i %i", recECode[1], gEeCallCode[1]);
-  write("2: %i %i", recECode[2], gEeCallCode[2]);
-  write("3: %i %i", recECode[3], gEeCallCode[3]);
     answerSent=1;
   }
+  
+  if(selectSent == 0 &&
+    gCarCrashed == 1 &&
+    recECode[0] == gEcAnswCode[0] &&
+    recECode[1] == gEcAnswCode[1] &&
+    recECode[2] == gEcAnswCode[2] &&
+    recECode[3] == gEcAnswCode[3])
+  {
+    //store all the answers and compare them to find the best one
+    //TODO: NOT HARDCODED!!!
+    byte rawECQI[4];
+    int eCQI[4];
+    byte rawIndex[4];
+    C2xGetThisData(4, 4, rawIndex);
+    index = (int)rawIndex[0] + (int)rawIndex[1]<<8 + (int)rawIndex[2]<<16 + (int)rawIndex[3]<<24 ;
+    
+    C2xGetThisData(8, 4, rawECQI);
+    eCQI[index] = (int)rawECQI[0] + (int)rawECQI[1]<<8 + (int)rawECQI[2]<<16 + (int)rawECQI[3]<<24;
+    
+    //TODO: Wait for messages --> timer
+    
+    eCSelect.sCode[44] = 0xf0;
+    eCSelect.sCode[45] = 0xf0;
+    eCSelect.sCode[46] = 0xf0;
+    eCSelect.sCode[47] = 0xf0;
+    eCSelect.selectedCarID = 2;    //Take the best option here
+    
+    write("OMG!! EeCall-Select!! %i", eCSelect.selectedCarID);
+    eCSelectPacket = C2xInitPacket(52, eCSelect);
+  
+    // Complete and send packet
+    C2xCompletePacket( eCSelectPacket );
+    C2xOutputPacket( eCSelectPacket );
+
+    // release packet
+    C2xReleasePacket( eCSelectPacket );
+    
+    selectSent = 1;
+  }
   /* new end */
-  if(gCarCrashed == 1)write("ficken");
-  if(gkCarId == 2)write("ich bin die 2");
      
   
   
@@ -1240,10 +1297,28 @@ void Rx_HandleITSStation(long packet, int dist)
   // insert car data in 
   CarDataListInsertItem(actCarData);
 }
+
+
 /*new*/
 RX_HandleECall(byte recECall[])
 {
   //hier findet die Berechnung statt!
+  eCAnswer.eCQI = 42;
+  eCAnswer.aCode[44] = 0xfa;
+  eCAnswer.aCode[45] = 0xcc;
+  eCAnswer.aCode[46] = 0xde;
+  eCAnswer.aCode[47] = 0x42;
+  
+  write("OMG!! EeCall!! %i", gkCarId);
+  eCAnswPacket = C2xInitPacket(52, eCAnswer);
+    
+    
+    // Complete and send packet
+    C2xCompletePacket( eCAnswPacket );
+    C2xOutputPacket( eCAnswPacket );
+
+    // release packet
+    C2xReleasePacket( eCAnswPacket );
 }
 
 /*end new*/
