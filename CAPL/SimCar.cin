@@ -10,11 +10,20 @@ variables
 {
   // SimCar configuration
   /* new */
+  
+    int sign;
+    int exponent;
+    int basestring;
+    float base;
+  
+  int counter               = 0;
+  int gFirstAidSkill		    = 0;
   int gCarCrashed           = 0;
   int answerSent            = 0;
   byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
   byte gEcAnswCode[4]       = {0xfa, 0xcc, 0xde, 0x42};
   byte gEcSelectCode[4]     = {0xf0, 0xf0, 0xf0, 0xf0};
+  int distance;
   /* end new */
   
   int gDriveCourseClockwise = 1;
@@ -138,11 +147,22 @@ variables
   long EcBrdcPacket;
   
   
+  struct EeCallRescueData
+  {
+    int crashCarID;
+    DWORD  timeStamp;
+    float  latitude;
+    float  longitude;
+  };
+  
+  struct EeCallRescueData rescueData;
+  
   struct EeCallAnswerData
   {
     BYTE aCode[48];
     int helpCarID;
     int eCQI;      //EeCallQualityIndex
+    //int numHelper;  //relevant, if a certain number of helpers is needed
   };
   
   struct EeCallAnswerData eCAnswer;
@@ -158,7 +178,7 @@ variables
   struct EeCallSelectData eCSelect;
   long eCSelectPacket;
 
-      int index;
+  int index;
   
   int selectSent;
   /* new end */
@@ -198,33 +218,6 @@ void Appl_Init ()
     stop();
   }
   
-  /* new */
-  if(gCarCrashed == 1){
-    //struct WLANData testData;
-    
-    
-    brdcast.ECode[44] = 0xf8;
-    brdcast.ECode[45] = 0xfa;
-    brdcast.ECode[46] = 0xfc;
-    brdcast.ECode[47] = 0x19;
-    //brdcast.ECode[33] = 0xff;
-    brdcast.crashCarID = gkCarId;
-    brdcast.longitude = 13.37;
-    brdcast.latitude = 0.0;
-    brdcast.accInfo.dmgClass = 2;
-    brdcast.accInfo.numPassengers = 4;
-    
-    EcBrdcPacket = C2xInitPacket(76, brdcast);
-    
-    
-    // Complete and send packet
-    C2xCompletePacket( EcBrdcPacket );
-    C2xOutputPacket( EcBrdcPacket );
-
-    // release packet
-    C2xReleasePacket( EcBrdcPacket );
-  /* new end */
-  }
 }
 
 on start
@@ -303,6 +296,39 @@ void SimCar_Start ()
 on timer tim_SimCar_UpdatePos
 {
   SimCar_Move();
+  
+  counter++;
+  
+  if(counter== 10){
+   
+    /* new */
+    if(gCarCrashed == 1){
+      //struct WLANData testData;
+      
+      brdcast.ECode[44] = 0xf8;
+      brdcast.ECode[45] = 0xfa;
+      brdcast.ECode[46] = 0xfc;
+      brdcast.ECode[47] = 0x19;
+      brdcast.crashCarID = 0xffffffff;//gkCarId;
+      brdcast.timestamp = 0xffffffff;
+      brdcast.latitude = 0xffffffff;//gSimCar_ActPosLat;
+      brdcast.longitude = 2.5;
+      brdcast.accInfo.dmgClass = 0xabcdef99;
+      brdcast.accInfo.numPassengers = 0xffffffff;
+      write("CrashCar position is %f : %f", gSimCar_ActPosLong, gSimCar_ActPosLat);
+      
+      EcBrdcPacket = C2xInitPacket(100, brdcast);
+      
+      
+      // Complete and send packet
+      C2xCompletePacket( EcBrdcPacket );
+      C2xOutputPacket( EcBrdcPacket );
+
+      // release packet
+      C2xReleasePacket( EcBrdcPacket );
+    /* new end */
+    } 
+  }
 
   setTimer (tim_SimCar_UpdatePos, gSimCar_UpdPosTimer);
 }
@@ -915,7 +941,10 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     recECode[3] == gEeCallCode[3])
   {
     //EeCall-Action!
-    Rx_HandleECall(recECode);
+    byte rawRescueData[16];
+    C2xGetThisData(4, 16, rawRescueData);
+    parseFromArray(rawRescueData);
+    Rx_HandleECall(rescueData);
     answerSent=1;
   }
   
@@ -932,10 +961,10 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     int eCQI[4];
     byte rawIndex[4];
     C2xGetThisData(4, 4, rawIndex);
-    index = (int)rawIndex[0] + (int)rawIndex[1]<<8 + (int)rawIndex[2]<<16 + (int)rawIndex[3]<<24 ;
+    index = (int) (0xffffffff && rawIndex[0] && rawIndex[1]<<8 && rawIndex[2]<<16  && rawIndex[3]<<24);
     
     C2xGetThisData(8, 4, rawECQI);
-    eCQI[index] = (int)rawECQI[0] + (int)rawECQI[1]<<8 + (int)rawECQI[2]<<16 + (int)rawECQI[3]<<24;
+    eCQI[index] = (int) (0xffffffff && rawECQI[0] && rawECQI[1]<<8 && rawECQI[2]<<16 && rawECQI[3]<<24);
     
     //TODO: Wait for messages --> timer
     
@@ -957,9 +986,8 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     
     selectSent = 1;
   }
-  /* new end */
-     
   
+  /* new end */
   
 
   // if it is a received message
@@ -978,6 +1006,40 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   }
 }
 
+
+/* new */     
+  
+  void parseFromArray(BYTE array[])
+  {    
+    int    i;
+    float result;
+    
+    rescueData.crashCarID = (int)array[0] + (int)(array[1] << 8) + (int)(array[2] << 16) + (int)(array[3] << 24);
+    rescueData.timeStamp = (DWORD) (0xffffffff && array[4] && (array[5] << 8) && (array[6] << 16) && (array[7] << 24));
+    rescueData.latitude = (float)array[8] + (float)(array[9] << 8) + (float)(array[10] << 16) + (float)(array[11] << 24);
+    rescueData.longitude = (float) (0xffffffff && array[12] && (array[13] << 8) && (array[14] << 16) && (array[15] << 24));
+    
+    
+    sign = _pow((-1),(int)(array[8]/128));
+    exponent = (array[8] && 127)*2 && (array[9] && 128)/128;
+    
+    basestring = ((array[9] && 127) * 65536) && (array[10] * 256) && array[11];
+    
+    base = 1;
+    for(i=0;i<=23;i++)
+    {
+     base +=  (basestring && _pow(2,i)) * _pow(2,-i);
+    }
+    
+    write("sign %i, exp %i, base %f", sign, exponent, base);
+    result = sign * base * _pow(2,(exponent-127));
+    write("float value of %f",result);
+    
+    
+    return;
+  }
+
+  /* end new */
 
 /****************************************************/
 //
@@ -1300,10 +1362,15 @@ void Rx_HandleITSStation(long packet, int dist)
 
 
 /*new*/
-RX_HandleECall(byte recECall[])
+RX_HandleECall(struct EeCallRescueData input)
 {
   //hier findet die Berechnung statt!
-  eCAnswer.eCQI = 42;
+  //theoretische Entfernungsberechnung durch Navi, um den eCQI zu ermitteln
+  distance = GPS_CalcDistance(gSimCar_ActPosLong, gSimCar_ActPosLat, input.longitude, input.latitude);
+  write("Position of car%i is %f : %f", gkCarId, gSimCar_ActPosLong, gSimCar_ActPosLat);
+  write("Position of CrashCar%i is %f : %f", input.crashCarID, input.longitude, input.latitude);
+  write("Distance of car%i to accident is %i", gkCarId, distance);
+  eCAnswer.eCQI = distance + gFirstAidSkill;
   eCAnswer.aCode[44] = 0xfa;
   eCAnswer.aCode[45] = 0xcc;
   eCAnswer.aCode[46] = 0xde;
@@ -1312,13 +1379,12 @@ RX_HandleECall(byte recECall[])
   write("OMG!! EeCall!! %i", gkCarId);
   eCAnswPacket = C2xInitPacket(52, eCAnswer);
     
-    
-    // Complete and send packet
-    C2xCompletePacket( eCAnswPacket );
-    C2xOutputPacket( eCAnswPacket );
+  // Complete and send packet
+  C2xCompletePacket( eCAnswPacket );
+  C2xOutputPacket( eCAnswPacket );
 
-    // release packet
-    C2xReleasePacket( eCAnswPacket );
+  // release packet
+  C2xReleasePacket( eCAnswPacket );
 }
 
 /*end new*/

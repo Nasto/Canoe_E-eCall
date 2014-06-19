@@ -29,6 +29,7 @@ on start
 void StartSimCar_1 ()
 {
   // configure sim car
+  gFirstAidSkill	    	= 1;
   gCarCrashed           = 0;
   gDriveCourseClockwise = 1;
   gUseDisplay           = 0;   // this option can only be enabled for one CAPL programm to use the car panel

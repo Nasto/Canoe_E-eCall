@@ -1,3 +1,4 @@
+/*@!Encoding:1252*/
 includes
 {
   #include "SimCar.cin"
@@ -28,6 +29,7 @@ on start
 void StartSimCar_1 ()
 {
   // configure sim car
+  gFirstAidSkill	    	= 3;
   gDriveCourseClockwise = 1;
   gUseDisplay           = 0;   // this option can only be enabled for one CAPL programm to use the car panel
   gkCommRange           = 100; // range in meter, in which messages are passed through to application
