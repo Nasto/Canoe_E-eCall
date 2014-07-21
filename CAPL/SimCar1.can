@@ -32,7 +32,7 @@ void StartSimCar_1 ()
   
   /* new */
   gCarCrashed           = 1;
-  
+  gFirstAidSkill        = 0;
   gSpeed                = 0;
   gSimCar_ActSpeed      = 0;
   gDriveCourseClockwise = 1;
