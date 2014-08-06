@@ -31,10 +31,11 @@ variables
   int counter2              = 0;
   int gFirstAidSkill		    = 0;
   int gCarCrashed           = 0;
+  int gCarSelected          = 0;
   int answerSent            = 0;
   byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
   byte gEcAnswCode[4]       = {0xfa, 0xcc, 0xde, 0x42};
-  byte gEcSelectCode[4]     = {0xf0, 0xf0, 0xf0, 0xf0};
+  byte gEcSelectCode[4]     = {0xab, 0xcd, 0xab, 0xcd};
   int distance;
   /* end new */
   
@@ -144,6 +145,8 @@ variables
     int dmgClass;
   };
   
+  
+  //sent by CrashCar
   struct EeCallBrdcData
   {
     //TODO: smart things!
@@ -157,12 +160,13 @@ variables
     int  longitude_2;
     int  longitude_3;
     DWORD  timeStamp;
-    struct AccidentData accInfo;
+    //struct AccidentData accInfo;
   };
   
   struct EeCallBrdcData brdcast;
   long EcBrdcPacket;
   
+  //received by helpers
    struct EeCallData
   {
     BYTE eCode[48];
@@ -171,23 +175,14 @@ variables
     float  latitude;//change
     float  longitude; //change
     DWORD  timeStamp;
-    struct AccidentData accInfo;
+    //struct AccidentData accInfo;
     
   };
   
   struct EeCallData eData;
   long EeCallDataPacket;
   
-  //Müll?
-  struct EeCallRescueData
-  {
-    int crashCarID;
-    DWORD  timeStamp;
-    float  latitude;  //change
-    float  longitude; // change
-  };
   
-  struct EeCallRescueData rescueData;
   //Antwort vom HelpCar an CrashCar
   struct EeCallAnswerData
   {
@@ -329,11 +324,12 @@ on timer tim_SimCar_UpdatePos
 {
   SimCar_Move();
   
+  /* new */
   counter++;
   
   if(counter== 10){
+    //This is where the car crashes!! BOOM!
    
-    /* new */
     if(gCarCrashed == 1){
       //struct WLANData testData;
       
@@ -341,7 +337,7 @@ on timer tim_SimCar_UpdatePos
       brdcast.ECode[45] = 0xfa;
       brdcast.ECode[46] = 0xfc;
       brdcast.ECode[47] = 0x19;
-      brdcast.crashCarID = 712;//gkCarId;
+      brdcast.crashCarID = gkCarId;
       brdcast.timestamp = 0xaffcfffa;
       
        lat = gSimCar_ActPosLat;
@@ -350,20 +346,22 @@ on timer tim_SimCar_UpdatePos
       brdcast.latitude_1 = (int)lat;//gSimCar_ActPosLat;
       lat = (lat - brdcast.latitude_1)*1000;
       brdcast.latitude_2 = (int)lat;
-       lat = (lat - brdcast.latitude_2)*1000;
+      lat = (lat - brdcast.latitude_2)*1000;
       brdcast.latitude_3 = (int)lat;
       
       brdcast.longitude_1 = (int)lng;//gSimCar_ActPosLat;
       lng = (lng - brdcast.longitude_1)*1000;
       brdcast.longitude_2 = (int)lng;
-       lng = (lng - brdcast.longitude_2)*1000;
+      lng = (lng - brdcast.longitude_2)*1000;
       brdcast.longitude_3 = (int)lng;
-      brdcast.accInfo.dmgClass = 0xabcdef99;
-      brdcast.accInfo.numPassengers = 0xffffffff;
+      
+      //brdcast.accInfo.dmgClass = 0xabcdef99;  //?
+      //brdcast.accInfo.numPassengers = 0xffffffff;
+      
       write("CrashCar position is %f : %f", gSimCar_ActPosLong, gSimCar_ActPosLat);
       
-      EcBrdcPacket = C2xInitPacket(100, brdcast);
       
+      EcBrdcPacket = C2xInitPacket(100, brdcast);
       
       // Complete and send packet
       C2xCompletePacket( EcBrdcPacket );
@@ -392,7 +390,8 @@ on timer tim_StartSimCar
 BYTE SimCar_CheckMove()
 {
   int distanceTL = 10000;
-
+  
+  
   distanceTL = GPS_CalcDistance( gSimCar_ActPosLong, gSimCar_ActPosLat, gTL_Long, gTL_Lat);
   // if no gTL_Long/gTL_Lat available, set dist to 5000
   if (distanceTL < 0)
@@ -428,7 +427,24 @@ void SimCar_Move()
 
   // check if car is allowed to move
   moveCommand = SimCar_CheckMove();
+  
+  /* new */
 
+  //write("Car %i selected: %i", gkCarId, gCarSelected);
+  if(gCarSelected == 1 && 
+    (GPS_CalcDistance(gSimCar_ActPosLong, gSimCar_ActPosLat, eData.longitude, eData.latitude) < 20)){
+      write("STOP!!! In the name of love!");
+      moveCommand = 0;
+      /*
+       gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
+      gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
+      gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
+      gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
+      */
+    }
+  
+  /* end new */
+  
   if (moveCommand != 0) // 0=do not move
   {
     if (GPS_FileReadLine(gSimCar_FileHandle[gSimCar_MoveFileId]) == 0) // file finished
@@ -466,6 +482,7 @@ void SimCar_Move()
       gSimCar_ActPosLong  = gLongitude;
       gSimCar_ActHeading  = gHeading;
       /* new */
+      //TODO: make the helper stop
       gSimCar_ActSpeed    = (gCarCrashed==1 ? 0 : gSpeed);
       /* end new */
       gSimCar_ActAltitude = gAltitude;
@@ -972,7 +989,7 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   int  stationType;
   
   /* new */
-  byte recECode[4];
+  byte recECode[4] = {0,0,0,0};
 
   //read the first 4 bytes
   C2xGetThisData(0, 4, recECode);
@@ -993,6 +1010,7 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     answerSent=1;
   }
   
+  //answers from possible helpers
   if(selectSent == 0 &&
     gCarCrashed == 1 &&
     recECode[0] == gEcAnswCode[0] &&
@@ -1002,30 +1020,43 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
   {
     
     //store all the answers and compare them to find the best one
-    //TODO: NOT HARDCODED!!!
+    //TODO: NOT HARDCODED!!! --> numCars?
    
-    byte rawECQI[6];
+    byte rawECQI[2];
     int eCQI[6];
-    byte rawIndex[6];
+    int bestValue = 9999; 
+    byte rawIndex[2];
+    int i;
+    int bestIndex;
      
     
       counter2++;
-    C2xGetThisData(4, 4, rawIndex);
+    C2xGetThisData(4, 2, rawIndex);
     index = (int)(rawIndex[0] + (int)(rawIndex[1]<<8));
-    write("INDEX: %i", index);
-    C2xGetThisData(8, 4, rawECQI);
-    eCQI[index] = (int) (0xffffffff && rawECQI[0] && rawECQI[1]<<8 && rawECQI[2]<<16 && rawECQI[3]<<24);
+    C2xGetThisData(6, 2, rawECQI);
+    eCQI[index] = (int) (rawECQI[0] + (int)(rawECQI[1]<<8));
     
     //TODO: Wait for messages --> timer
     if(counter2==4)
     {
-    eCSelect.sCode[44] = 0xf0;
-    eCSelect.sCode[45] = 0xf0;
-    eCSelect.sCode[46] = 0xf0;
-    eCSelect.sCode[47] = 0xf0;
-    eCSelect.selectedCarID = 2;    //Take the best option here
+    eCSelect.sCode[44] = gEcSelectCode[0];
+    eCSelect.sCode[45] = gEcSelectCode[1];
+    eCSelect.sCode[46] = gEcSelectCode[2];
+    eCSelect.sCode[47] = gEcSelectCode[3];
+      
+      for(i=2; i<6; i++){
+        if(eCQI[i] < bestValue){
+          bestValue = eCQI[i];
+          bestIndex = i;
+        }
+      }
+      
+    eCSelect.selectedCarID = bestIndex;
     
-    write("OMG!! EeCall-Select!! %i", eCSelect.selectedCarID);
+    write("YEAH!! EeCall-Select!! %i", eCSelect.selectedCarID);
+    
+    selectSent = 1;
+    
     eCSelectPacket = C2xInitPacket(52, eCSelect);
   
     // Complete and send packet
@@ -1035,14 +1066,39 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     // release packet
     C2xReleasePacket( eCSelectPacket );
     
-    selectSent = 1;
+
     }
-    //TODO auserwähltes Auto muss Antwort bekommen
+    
   }
+  
+    //TODO auserwähltes Auto muss Antwort bekommen und reagieren --> hinfahren und stehenbleiben
+  if(recECode[0] == gEcSelectCode[0] &&
+    recECode[1] == gEcSelectCode[1] &&
+    recECode[2] == gEcSelectCode[2] &&
+    recECode[3] == gEcSelectCode[3]){
+     
+      byte rawIndex[2];
+      
+      C2xGetThisData(4, 2, rawIndex);
+      index = (int)(rawIndex[0] + (int)(rawIndex[1]<<8));
+      
+      //write("Select-Index %i", index);
+      if(gkCarId == index) {
+        //weiterfahren bis zum Unfall --> dann anhalten
+        //write("selected! %i", gkCarId);
+        gCarSelected = 1;
+      }
+      
+    }
+    
+    
+    
   
   /* new end */
   
 
+  
+  
   // if it is a received message
   if (dir == RX)
   {
