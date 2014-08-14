@@ -27,16 +27,20 @@ variables
     int lng_tmp2;
     int lng_tmp3;
   
-  int counter               = 0;
-  int counter2              = 0;
+  int answerCounter         = 0;
   int gFirstAidSkill		    = 0;
   int gCarCrashed           = 0;
   int gCarSelected          = 0;
   int answerSent            = 0;
+  int eECallSent            = 0;
   byte gEeCallCode[4]       = {0xf8, 0xfa, 0xfc, 0x19};
   byte gEcAnswCode[4]       = {0xfa, 0xcc, 0xde, 0x42};
   byte gEcSelectCode[4]     = {0xab, 0xcd, 0xab, 0xcd};
   int distance;
+  int random_time;
+  int movecounter           = 0;
+  long timeArr[9];
+  BYTE arrived              = 0;
   /* end new */
   
   int gDriveCourseClockwise = 1;
@@ -263,6 +267,7 @@ void Appl_Start ()
   setTimer(tim_StartSimCar, 5);
 
   setTimer(tim_UpdateCarList,500);
+
 }
 
 on preStop
@@ -290,28 +295,118 @@ on preStop
 /*********************************************/
 void SimCar_Start ()
 {
-  if(gCarCrashed == 0){
     // open gps route files
     if (gDriveCourseClockwise == 1)
     {
-      gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
-      gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise2.log");
-      gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
-      gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+      /*
+      gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+      gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise2.log");
+      gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+      gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+      */
+      switch(gkCarId){
+        case 1:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          break;
+        }
+        case 2:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise2.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          break;
+        }
+        case 3:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          break;
+        }
+        case 4:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          break;
+        }
+        case 5:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise3.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise1.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_Clockwise4.log");
+          break;
+        }
+      }
+      
     }
     else
     {
+      /*
       gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
       gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise2.log");
       gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
       gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+      */
+      switch(gkCarId){
+        case 1:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+          break;
+        }
+        case 2:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          break;
+        }
+        case 3:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          break;
+        }
+        case 4:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+          break;
+        }
+        case 5:
+        {
+          gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise4.log");
+          gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise1.log");
+          gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise2.log");
+          gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CounterClockwise3.log");
+          break;
+        }
+      }
+        
     }
+        
     
-  /* new */
-  } else {
-    gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
-  }
-  /* new end */
+      
+    if(gkCarId == 1){
+      random_time = 50 + random(300);
+      write("random time is %i",random_time);
+    }
   
   // start update position timer
   setTimer (tim_SimCar_UpdatePos, gSimCar_UpdPosTimer);
@@ -323,15 +418,9 @@ void SimCar_Start ()
 on timer tim_SimCar_UpdatePos
 {
   SimCar_Move();
-  
-  /* new */
-  counter++;
-  
-  if(counter== 10){
-    //This is where the car crashes!! BOOM!
    
-    if(gCarCrashed == 1){
-      //struct WLANData testData;
+  /* new */
+    if(gCarCrashed == 1 && eECallSent == 0){
       
       brdcast.ECode[44] = 0xf8;
       brdcast.ECode[45] = 0xfa;
@@ -369,9 +458,10 @@ on timer tim_SimCar_UpdatePos
 
       // release packet
       C2xReleasePacket( EcBrdcPacket );
+      
+      eECallSent = 1;
+    }
     /* new end */
-    } 
-  }
 
   setTimer (tim_SimCar_UpdatePos, gSimCar_UpdPosTimer);
 }
@@ -406,6 +496,21 @@ BYTE SimCar_CheckMove()
       return 0;
     }
   }  
+  
+  
+  if(gCarSelected == 1 && 
+    (GPS_CalcDistance(gSimCar_ActPosLong, gSimCar_ActPosLat, eData.longitude, eData.latitude) < 20)){
+      if(arrived == 0){
+        getLocalTime(timeArr);
+        write("Helper arrived at %d:%d:%d",timeArr[2], timeArr[1],timeArr[0]);
+        arrived = 1;
+      }
+      return 0;
+    }
+    
+    if(gCarCrashed==1){
+      return 0;
+    }
 
   // standard: normal movement
   return 1;
@@ -428,20 +533,19 @@ void SimCar_Move()
   // check if car is allowed to move
   moveCommand = SimCar_CheckMove();
   
+  
   /* new */
+  if(gkCarId == 1) {
+    ++movecounter;
+  }
+  
+  if(movecounter >= random_time && gkCarId == 1 && gCarCrashed == 0){
+    gCarCrashed = 1;
+    getLocalTime(timeArr);
+    write("Crash occured at %d:%d:%d",timeArr[2], timeArr[1],timeArr[0]);
+  }
 
   //write("Car %i selected: %i", gkCarId, gCarSelected);
-  if(gCarSelected == 1 && 
-    (GPS_CalcDistance(gSimCar_ActPosLong, gSimCar_ActPosLat, eData.longitude, eData.latitude) < 20)){
-      write("STOP!!! In the name of love!");
-      moveCommand = 0;
-      /*
-       gSimCar_FileHandle[0] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
-      gSimCar_FileHandle[1] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
-      gSimCar_FileHandle[2] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
-      gSimCar_FileHandle[3] = GPS_FileOpen(".\\Course_logs\\Course_CrashCar.log");
-      */
-    }
   
   /* end new */
   
@@ -451,6 +555,7 @@ void SimCar_Move()
     {
       if (gSimCar_MoveFileId == 0) 
       {
+        /*
         if (gHL_AccidentFlag) {
           // there is an accident, use alternativ route
           gSimCar_MoveFileId = 2;
@@ -459,6 +564,8 @@ void SimCar_Move()
           // no accident, use direct route
           gSimCar_MoveFileId = 1;
         }
+        */
+        gSimCar_MoveFileId = 1;
       }
       else if (gSimCar_MoveFileId == 1) {
         gSimCar_MoveFileId = 3;
@@ -1030,20 +1137,21 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
     int bestIndex;
      
     
-      counter2++;
+      answerCounter++;
     C2xGetThisData(4, 2, rawIndex);
     index = (int)(rawIndex[0] + (int)(rawIndex[1]<<8));
     C2xGetThisData(6, 2, rawECQI);
     eCQI[index] = (int) (rawECQI[0] + (int)(rawECQI[1]<<8));
     
-    //TODO: Wait for messages --> timer
-    if(counter2==4)
+    //TODO: Wait for messages --> timer?
+    if(answerCounter==4)
     {
     eCSelect.sCode[44] = gEcSelectCode[0];
     eCSelect.sCode[45] = gEcSelectCode[1];
     eCSelect.sCode[46] = gEcSelectCode[2];
     eCSelect.sCode[47] = gEcSelectCode[3];
       
+      //find the one with the best (=lowest) eCQI
       for(i=2; i<6; i++){
         if(eCQI[i] < bestValue){
           bestValue = eCQI[i];
@@ -1053,7 +1161,7 @@ void OnC2xPacket (LONG channel, LONG dir, LONG radioChannel, LONG signalStrength
       
     eCSelect.selectedCarID = bestIndex;
     
-    write("YEAH!! EeCall-Select!! %i", eCSelect.selectedCarID);
+    write("Selected helper is Car%i", eCSelect.selectedCarID);
     
     selectSent = 1;
     
@@ -1480,9 +1588,11 @@ RX_HandleECall(struct EeCallData input)
   //hier findet die Berechnung statt!
   //theoretische Entfernungsberechnung durch Navi, um den eCQI zu ermitteln
   distance = GPS_CalcDistance(gSimCar_ActPosLong, gSimCar_ActPosLat, input.longitude, input.latitude);
+  /*
   write("Position of car%i is %f : %f", gkCarId, gSimCar_ActPosLong, gSimCar_ActPosLat);
   write("Position of CrashCar%i is %f : %f", input.crashCarID, input.longitude, input.latitude);
   write("Distance of car%i to accident is %i", gkCarId, distance);
+  */
   eCAnswer.helpCarID = gkCarId;
   eCAnswer.eCQI = distance - gFirstAidSkill*40;
   eCAnswer.aCode[44] = 0xfa;
@@ -1490,7 +1600,7 @@ RX_HandleECall(struct EeCallData input)
   eCAnswer.aCode[46] = 0xde;
   eCAnswer.aCode[47] = 0x42;
   
-  write("OMG!! EeCall!! %i", gkCarId);
+  write("Car%i just received an E-eCall!", gkCarId);
   eCAnswPacket = C2xInitPacket(52, eCAnswer);
     
   // Complete and send packet

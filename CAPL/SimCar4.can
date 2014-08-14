@@ -30,10 +30,10 @@ void StartSimCar_1 ()
 {
   // configure sim car
   gFirstAidSkill	    	= 3;
-  gDriveCourseClockwise = 1;
+  gDriveCourseClockwise = 0;
   gUseDisplay           = 0;   // this option can only be enabled for one CAPL programm to use the car panel
   gkCommRange           = 100; // range in meter, in which messages are passed through to application
-  gSimCar_UpdPosTimer   = 300; // configures how "fast" the vehicle moves (rate in ms to read GPS pos from file)
+  gSimCar_UpdPosTimer   = 200; // configures how "fast" the vehicle moves (rate in ms to read GPS pos from file)
   gkCarId               = 4;   // last BYTE of MAC Id (also used in Network Address)
 
   // call init and start function of included SimCar CAPL programm
